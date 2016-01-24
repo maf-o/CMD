@@ -1,0 +1,43 @@
+fsutil fsinfo drives %2>NuL
+
+@echo off
+IF %errorlevel%  == 1 (
+
+echo Du musst ein Admin sein!
+
+
+echo.
+echo #####################################################################
+echo #                                                                   #
+echo #       Diese Datei muss als Administrator ausgefuerht werden       #
+echo #                                                                   #
+echo # Rechtsklick auf die Datei - Ausfuehren als Administrator, weahlen #
+echo #                                                                   #
+echo # ----------------------------------------------------------------- #
+echo #                                                                   #
+echo #              This File has to be run as Administrator             #
+echo #                                                                   #
+echo #      Rightclick the File and choose - Run as Administrator        #
+echo #                                                                   #
+echo #####################################################################
+echo.
+
+pause
+exit
+)
+
+@echo off
+echo Du bist Admin
+echo.
+echo 00000000000000000000000000000000000000000000000000000000000000000000
+echo 0                                                                  0
+echo 0    Beliebige Taste druecken um fortzufahren                      0
+echo 0                                                                  0
+echo 0 ---------------------------------------------------------------- 0
+echo 0                                                                  0
+echo 0   Push any button to continue                                    0
+echo 0                                                                  0
+echo 00000000000000000000000000000000000000000000000000000000000000000000
+echo.
+pause
+exit
