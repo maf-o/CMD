@@ -1,0 +1,85 @@
+@echo off 
+
+@for /F "tokens=13,*" %%i in ('ipconfig^|find "IPv4-Ad"') do @set IP=%%i 
+echo found IP %IP% 
+if %IP%==192.0.0.2 goto DSL
+goto lte
+
+:dsl
+  echo #######################################################
+  echo #                                                     #
+  echo #            PC im DSL Netzwerk (Kabel)               #
+  echo #                                                     #
+  echo #######################################################
+echo.
+  
+  echo Automatisches umschalten auf Funk in 
+  TIMEOUT /T 5
+echo.
+echo.
+
+fsutil fsinfo drives|findstr /c:":\\">nul ||(
+  echo #######################################################
+  echo #                                                     #
+  echo # Starte dieses Skript mit Adminrechten erneut!       #
+  echo #                                                     #
+  echo # Rechtsklick auf die Datei und dann                  #
+  echo # ALS ADMINISTATOR AUSFUEHEREN                        #
+  echo #                                                     #
+  echo #######################################################
+  echo.
+  echo.
+  echo.
+  pause
+  goto :eof
+)
+
+@echo Programm nicht schliessen
+@echo Auf Erfolgs- oder Fehler-Meldung warten
+netsh interface ip set address name="LAN-Verbindung" source=static addr=192.0.0.2 mask=255.255.255.0 gateway=192.0.0.1 gwmetric=1
+TIMEOUT /T 3
+
+@echo PC wurde erfolgreich im LTE Netzwerk eingebunden
+@echo Fenster schliesst automatisch
+TIMEOUT /T 3
+goto :EOF
+
+:lte 
+
+
+  echo #######################################################
+  echo #                                                     #
+  echo #            PC im LTE Netzwerk (Funk)                #
+  echo #                                                     #
+  echo #######################################################
+  echo.
+  echo Automatisches umschalten auf Kabel in 
+  TIMEOUT /T 5
+echo.
+echo.
+
+echo.
+fsutil fsinfo drives|findstr /c:":\\">nul ||(
+  echo #######################################################
+  echo #                                                     #
+  echo # Starte dieses Skript mit Adminrechten erneut!       #
+  echo #                                                     #
+  echo # Rechtsklick auf die Datei und dann                  #
+  echo # ALS ADMINISTATOR AUSFUEHEREN                        #
+  echo #                                                     #
+  echo #######################################################
+  echo.
+  echo.
+  echo.
+  pause
+  goto :eof
+)
+@echo Programm nicht schliessen
+@echo Auf Erfolgs- oder Fehler-Meldung warten
+netsh interface ip set address name="LAN-Verbindung" source=static addr=192.0.0.2 mask=255.255.255.0 gateway=192.0.0.1 gwmetric=1
+TIMEOUT /T 3
+
+@echo PC wurde erfolgreich im DSL Netzwerk eingebunden
+@echo Fenster schliesst automatisch
+TIMEOUT /T 3
+goto :EOF
