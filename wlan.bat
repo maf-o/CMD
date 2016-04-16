@@ -1,3 +1,5 @@
+cd /d "%~dp0"
+mkdir \xml
 netsh wlan export profile folder=%~dp0\xml key=clear
 exit
 
