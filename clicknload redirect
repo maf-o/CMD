@@ -1,0 +1,94 @@
+@echo off
+::https://github.com/pyload/pyload/issues/3572#issuecomment-611348269
+set DEST=T20
+set IPNAS=192.168.178.118
+set CNLPORT=9666
+goto check
+:start
+    net session >nul 2>&1
+    if %errorLevel% == 0 (
+		goto menu
+    ) else 	(
+		echo.
+		echo 000000000000000000000000000000000000000000000000000000000000000000000
+		echo 0                                                                   0
+		echo 0       Diese Datei muss als Administrator ausgefuerht werden       0
+		echo 0                                                                   0
+		echo 0 Rechtsklick auf die Datei - Ausfuehren als Administrator, weahlen 0
+		echo 0                                                                   0
+		echo 0 ----------------------------------------------------------------- 0
+		echo 0                                                                   0
+		echo 0              This File has to be run as Administrator             0
+		echo 0                                                                   0
+		echo 0      Rightclick the File and choose - Run as Administrator        0
+		echo 0                                                                   0
+		echo 000000000000000000000000000000000000000000000000000000000000000000000
+		echo.
+		pause
+		exit
+	)
+:menu
+	echo            ################################################
+	echo            #     Click'n'Load port forwarding script      #
+	echo            #                    v1.1                      #
+	echo            #             by UserX / maf-o                 #
+	echo            ################################################
+	echo.
+	echo What to do?
+	echo.
+	echo [A]ctivate forwarding to %DEST%
+	echo [D]eactivate forwarding to %DEST%
+	echo [C]heck forwarding
+	echo [E]xit in 20 sec.
+	echo.
+	echo Your Choice: 
+	choice /C DACE /N /T 20 /D E
+	IF %ERRORLEVEL% EQU 4 goto exit
+	IF %ERRORLEVEL% EQU 3 goto check
+	IF %ERRORLEVEL% EQU 2 goto activate
+	IF %ERRORLEVEL% EQU 1 goto deactivate
+	goto end
+  
+:deactivate
+	cls
+	echo.
+	echo deactivating
+	netsh interface portproxy delete v4tov4 listenport=%CNLPORT% listenaddress=127.0.0.1
+	goto end
+
+:activate
+	cls
+	echo.
+	echo activating
+	netsh interface portproxy add v4tov4 listenport=%CNLPORT% connectaddress=%IPNAS% connectport=%CNLPORT% listenaddress=127.0.0.1
+	echo done
+	goto end
+
+:check
+	echo.
+	echo checking...
+	netsh interface portproxy show all | find /c "%CNLPORT%">nul
+	IF %ERRORLEVEL% == 1 (
+	echo Port forwarding deactivated
+	) ELSE (
+	echo Port forwarding activated
+	)
+	goto start
+
+:end
+	netsh interface portproxy show all | find /c "%CNLPORT%">nul
+	IF %ERRORLEVEL% == 1 (
+	echo Port forwarding deactivated
+	) ELSE (
+	echo Port forwarding activated
+	)
+	echo.
+	echo exiting in 20 sec. Wanna go to Menu [Y]es ^| [N]o
+	choice /C YN /N /T 20 /D N
+	IF %ERRORLEVEL% EQU 1 
+	(
+		cls
+		goto menu
+	)
+  
+:exit
